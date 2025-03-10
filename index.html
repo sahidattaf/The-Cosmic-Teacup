@@ -6,82 +6,262 @@
     <meta name="description" content="Explore THE MULTIVERSE OF EVERYDAY THINGS: 50 Surreal Adventures of Sentient Objects. A stunning art book featuring surreal storytelling and animated character design.">
     <meta name="keywords" content="surrealist art book, animated character design, surreal storytelling, sentient objects, art animation book, surrealism coffee table book, experimental animation, character design, micro-stories, fantasy concept art, surreal character design">
     <title>THE MULTIVERSE OF EVERYDAY THINGS™ | Where the Ordinary Becomes Extraordinary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f5f5f5;
+            --text-color: #2c3e50;
+            --container-bg: white;
+            --hover-color: #c0392b;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #ecf0f1;
+            --accent-color: #3498db;
+            --bg-color: #2c3e50;
+            --text-color: #ecf0f1;
+            --container-bg: #34495e;
+            --hover-color: #e74c3c;
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         .container {
-            background-color: white;
+            background-color: var(--container-bg);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
         }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         h1 {
-            color: #2c3e50;
+            color: var(--primary-color);
             text-align: center;
             font-size: 2.5em;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
+
         .subtitle {
-            color: #7f8c8d;
+            color: var(--text-color);
             text-align: center;
             font-size: 1.2em;
             margin-bottom: 30px;
+            opacity: 0.8;
         }
-        .copyright {
-            color: #95a5a6;
+
+        .newsletter-form {
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
             text-align: center;
-            font-size: 0.9em;
-            margin-bottom: 30px;
         }
-        .description {
-            font-size: 1.1em;
-            margin-bottom: 30px;
+
+        .newsletter-form input[type="email"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            border: 2px solid var(--accent-color);
+            border-radius: 25px;
+            margin: 10px 0;
+            font-size: 1em;
+            background: var(--bg-color);
+            color: var(--text-color);
         }
-        .features {
-            background-color: #f8f9fa;
+
+        .character-showcase {
+            margin: 40px 0;
+        }
+
+        .character-card {
+            background: var(--container-bg);
             padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: all 0.6s ease;
         }
-        .features ul {
-            list-style-type: none;
-            padding-left: 0;
+
+        .character-card.visible {
+            transform: translateX(0);
+            opacity: 1;
         }
-        .features li {
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
+
+        .preview-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
         }
-        .features li:before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #3498db;
+
+        .preview-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
-        .viral-note {
-            font-style: italic;
-            color: #34495e;
-            margin-top: 20px;
+
+        .preview-image:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            margin: 20px auto;
+            display: block;
+            width: fit-content;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background-color: var(--hover-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .preview-gallery {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
     <div class="container">
         <h1>THE MULTIVERSE OF EVERYDAY THINGS™</h1>
         <div class="subtitle">Where the Ordinary Becomes Extraordinary</div>
         <div class="copyright">© 2025 Cosmic Media Productions. All Rights Reserved.</div>
+
+        <a href="#pre-order" class="cta-button">Pre-order Now</a>
+
+        <div id="book-preview" class="book-preview"></div>
+
+        <div id="countdown" class="countdown">
+            <div class="countdown-item">
+                <span id="days">00</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span id="hours">00</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span id="minutes">00</span>
+                <span class="label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span id="seconds">00</span>
+                <span class="label">Seconds</span>
+            </div>
+        </div>
 
         <div class="description">
             <h2>50 Surreal Adventures of Sentient Objects</h2>
             <p>
                 Dive into the strange and beautiful world where everyday objects come alive and break the laws of physics! This stunning full-color art book features 50 micro-stories about sentient teacups, rebellious paperclips, philosophical houseplants, and more as they discover cosmic powers and travel between dimensions.
             </p>
+        </div>
+
+        <div class="newsletter-form">
+            <h2>Stay Updated</h2>
+            <p>Subscribe to receive updates about the book launch and exclusive content!</p>
+            <form id="newsletter-form" onsubmit="handleSubscribe(event)">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit" class="cta-button">Subscribe</button>
+            </form>
+        </div>
+
+        <div class="character-showcase">
+            <h2>Meet the Characters</h2>
+            <div class="character-card">
+                <h3>The Cosmic Teacup</h3>
+                <p>A philosophical teacup who discovered it could bend spacetime with its morning brew.</p>
+            </div>
+            <div class="character-card">
+                <h3>The Quantum Paperclip</h3>
+                <p>A rebellious paperclip that learned to exist in multiple dimensions simultaneously.</p>
+            </div>
+            <div class="character-card">
+                <h3>The Time-Traveling Toaster</h3>
+                <p>A nostalgic toaster that sends bread through temporal portals, returning it perfectly toasted from the future.</p>
+            </div>
+        </div>
+
+        <div class="preview-gallery">
+            <div class="preview-image">Preview 1</div>
+            <div class="preview-image">Preview 2</div>
+            <div class="preview-image">Preview 3</div>
         </div>
 
         <div class="features">
@@ -94,9 +274,225 @@
             </ul>
         </div>
 
+        <div class="testimonials">
+            <h3>What Readers Are Saying</h3>
+            <div class="testimonial">
+                <div class="testimonial-text">"A mind-bending journey that transforms the mundane into the magical. Every page is a new adventure!"</div>
+                <div class="testimonial-author">- Sarah Chen, Art Director</div>
+            </div>
+            <div class="testimonial">
+                <div class="testimonial-text">"The perfect blend of surrealism and storytelling. This book will change how you see everyday objects forever."</div>
+                <div class="testimonial-author">- Mark Thompson, Animation Artist</div>
+            </div>
+        </div>
+
+        <div class="email-signup">
+            <h3>Be the First to Know When We Launch</h3>
+            <form>
+                <input type="email" placeholder="Enter your email address">
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
         <div class="viral-note">
             <p>Based on the viral YouTube series "Ten Seconds of Impossible™" with over 10 million views, this coffee table book is perfect for fans of surrealist art, animation enthusiasts, and anyone who loves to see reality bent in beautiful and unexpected ways.</p>
+        </div>
+
+        <div class="social-share">
+            <a href="#twitter">Twitter</a>
+            <a href="#facebook">Facebook</a>
+            <a href="#instagram">Instagram</a>
+            <a href="#pinterest">Pinterest</a>
         </div>
     </div>
 </body>
 </html>
+
+        <div class="author-bio">
+            <div class="author-image" style="background-image: url('https://placehold.co/300x300/34495e/ffffff/png?text=Author')"></div>
+            <div class="author-info">
+                <h3>About the Creator</h3>
+                <p>Meet the visionary artist behind THE MULTIVERSE OF EVERYDAY THINGS™. With over a decade of experience in surrealist art and animation, our creator has worked with leading studios and galleries worldwide, bringing impossible worlds to life.</p>
+            </div>
+        </div>
+
+        <div class="sample-chapter">
+            <h3>Sample Story: The Cosmic Teacup</h3>
+            <p>"In a world where porcelain dreams take flight, a humble teacup discovers it can bend the fabric of reality with every ripple of its contents. Join our hero as it learns to navigate the space between dimensions, making unlikely friends with a quantum-physics-obsessed spoon along the way..."</p>
+            <a href="#read-more" class="cta-button">Read Full Sample</a>
+        </div>
+
+        <div class="faq-section">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item">
+                <div class="faq-question">When will the book be released?</div>
+                <div class="faq-answer">The book is scheduled for release in early 2025. Pre-order now to secure your copy and receive exclusive behind-the-scenes content.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Is this suitable for children?</div>
+                <div class="faq-answer">While the book's whimsical nature appeals to readers of all ages, it's best suited for art enthusiasts and creative minds 12 and up.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Will there be a digital version?</div>
+                <div class="faq-answer">Yes! The book will be available in both print and digital formats, with the digital version featuring exclusive animated elements.</div>
+            </div>
+        </div>
+
+        <div class="blog-section">
+            <h3>Latest Updates</h3>
+            <div class="blog-post">
+                <div class="blog-date">December 15, 2024</div>
+                <h4>Behind the Scenes: Creating The Cosmic Teacup</h4>
+                <p>Take a peek into our creative process as we bring the story of our dimension-hopping teacup to life through concept art, animation tests, and more...</p>
+                <a href="#read-more">Read More →</a>
+            </div>
+            <div class="blog-post">
+                <div class="blog-date">December 1, 2024</div>
+                <h4>Meet the Characters: The Philosophical Houseplant</h4>
+                <p>Discover the inspiration behind one of our most contemplative characters, a houseplant that ponders the meaning of photosynthesis...</p>
+                <a href="#read-more">Read More →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+        <div class="preview-gallery">
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/e74c3c/ffffff/png?text=Surreal+Art+1')"></div>
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/3498db/ffffff/png?text=Surreal+Art+2')"></div>
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/2ecc71/ffffff/png?text=Surreal+Art+3')"></div>
+        </div>
+
+    <style>
+        .book-preview {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+            background: var(--container-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .countdown-item {
+            background: var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .countdown-item span {
+            display: block;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .countdown-item .label {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+    </style>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.setAttribute('data-theme', 
+                document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        }
+
+        // Add smooth scroll behavior to all anchor links
+
+        // Initialize 3D Book Preview
+        function initBookPreview() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, 400);
+            document.getElementById('book-preview').appendChild(renderer.domElement);
+
+            const geometry = new THREE.BoxGeometry(2, 3, 0.3);
+            const material = new THREE.MeshBasicMaterial({color: 0x3498db});
+            const book = new THREE.Mesh(geometry, material);
+            scene.add(book);
+
+            camera.position.z = 5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                book.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // Initialize Countdown Timer
+        function initCountdown() {
+            const releaseDate = luxon.DateTime.fromISO('2025-01-01T00:00:00');
+
+            function updateCountdown() {
+                const now = luxon.DateTime.now();
+                const diff = releaseDate.diff(now, ['days', 'hours', 'minutes', 'seconds']);
+
+                document.getElementById('days').textContent = Math.floor(diff.days).toString().padStart(2, '0');
+                document.getElementById('hours').textContent = Math.floor(diff.hours).toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = Math.floor(diff.minutes).toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = Math.floor(diff.seconds).toString().padStart(2, '0');
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+
+        function handleSubscribe(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            alert(`Thank you for subscribing! We'll keep you updated about the launch.`);
+            event.target.reset();
+        }
+
+        function initCharacterShowcase() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.character-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Initialize features when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initBookPreview();
+            initCountdown();
+            initCharacterShowcase();
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+        <div class="preview-gallery">
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/e74c3c/ffffff/png?text=Surreal+Art+1')"></div>
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/3498db/ffffff/png?text=Surreal+Art+2')"></div>
+            <div class="preview-image" style="background-image: url('https://placehold.co/600x400/2ecc71/ffffff/png?text=Surreal+Art+3')"></div>
+        </div>
